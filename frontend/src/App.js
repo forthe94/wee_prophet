@@ -43,8 +43,6 @@ function App() {
           variant="outlined"
           color="secondary"
         />
-        <CheckboxExample/>
-        <img src={logo} className="App-logo" alt="logo"/>
         <ButtonGroup>
           <Button
             startIcon={<SaveIcon/>}
