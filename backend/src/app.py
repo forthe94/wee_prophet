@@ -1,12 +1,21 @@
 from beanie import init_beanie
 from fastapi import Depends, FastAPI
+from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
 
 from backend.src.db import User, db
 from backend.src.schemas import UserCreate, UserRead, UserUpdate
 from backend.src.users import auth_backend, current_active_user, fastapi_users
 
 app = FastAPI()
-
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(
     fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
 )
@@ -45,3 +54,9 @@ async def on_startup():
             User,
         ],
     )
+
+
+@app.post("/")
+async def root(request: Request):
+    await request.json()
+    return await request.json()
