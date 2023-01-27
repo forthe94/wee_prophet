@@ -9,10 +9,13 @@ import Checkbox from '@mui/material/Checkbox'
 import {FormControlLabel} from "@mui/material";
 import {TextField} from "@mui/material";
 import axios from "axios";
+import RegistrationForm from "./Components/RegistrationForm";
+
 async function buttonClick() {
   let response = await axios.get('http://127.0.0.1:8000')
   alert(response.data)
 }
+
 
 function CheckboxExample() {
   const [checked, setChecked] = React.useState(true)
@@ -57,6 +60,7 @@ function App() {
             Discard
           </Button>
         </ButtonGroup>
+        <RegistrationForm/>
       </header>
     </div>
   );
