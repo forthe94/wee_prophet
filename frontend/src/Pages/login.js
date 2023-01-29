@@ -6,8 +6,11 @@ import {
 } from '@mui/material';
 import {useState} from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -33,8 +36,9 @@ const LoginPage = () => {
       },
     )
       .then(response => {
-        console.log(response);
+        console.log("Login successful");
         localStorage.setItem('token', response.data['access_token']);
+        navigate("/profile");
       })
       .catch(error => {
         console.log(error);

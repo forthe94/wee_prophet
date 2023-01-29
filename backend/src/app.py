@@ -40,6 +40,15 @@ app.include_router(
     tags=["users"],
 )
 
+@app.post("/deed-record")
+async def create_deed_record(request: Request, user: User = Depends(current_active_user)):
+    document = {'test': 'value'}
+
+    result = await db.test_collection.insert_one(document)
+
+    print('result %s' % repr(result.inserted_id))
+    return "OK"
+
 
 @app.get("/authenticated-route")
 async def authenticated_route(user: User = Depends(current_active_user)):
