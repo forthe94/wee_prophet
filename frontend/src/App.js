@@ -6,6 +6,7 @@ import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import LoginPage from "./Pages/login";
 
 
+
 function App() {
   const storedJwt = localStorage.getItem('token');
   console.log("storedJWT =", storedJwt)

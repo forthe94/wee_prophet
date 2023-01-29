@@ -1,54 +1,90 @@
 import React from 'react';
 import {
-  Checkbox,
   Grid,
   TextField,
-  FormControlLabel,
-  Paper,
   Button
 } from '@mui/material';
-const LoginPage = () => {
-  const [checked, setChecked] = React.useState(true);
+import {useState} from "react";
+import axios from "axios";
 
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
+const LoginPage = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // send axios request to backend server
+    axios.post(
+      'http://localhost:8000/auth/jwt/login',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    )
+      .then(response => {
+        console.log(response);
+        // handle successful response
+      })
+      .catch(error => {
+        console.log(error);
+        // handle error
+      });
+  }
 
   return (
-    <div style={{ padding: 30 }}>
-      <Paper>
-        <Grid
-          container
-          spacing={3}
-          direction={'column'}
-          justify={'center'}
-          alignItems={'center'}
+    <form>
+      <Grid
+        container
+        spacing={3}
+        direction={'column'}
+        justify={'center'}
+        alignItems={'center'}
+      >
+        <div style={{padding: 30}}>
+
+          <TextField
+            label="Username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
+          <TextField
+            label="Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
+
+        </div>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          fullWidth
+          onClick={handleSubmit}
         >
-          <Grid item xs={12}>
-            <TextField label="Username"></TextField>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField label="Password" type={'password'}></TextField>
-          </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={checked}
-                  onChange={handleChange}
-                  label={'Keep me logged in'}
-                  inputProps={{ 'aria-label': 'primary checkbox' }}
-                />
-              }
-              label="Keep me logged in"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button fullWidth> Login </Button>
-          </Grid>
-        </Grid>
-      </Paper>
-    </div>
+          Submit
+        </Button>
+      </Grid>
+    </form>
   );
 };
 

@@ -103,7 +103,7 @@ export default function MenuAppBar() {
           </Menu>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            MyReactMaterialApp
+            Wee Prophet
           </Typography>
 
           {/* Right hand side */}
