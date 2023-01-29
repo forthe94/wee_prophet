@@ -34,7 +34,7 @@ const LoginPage = () => {
     )
       .then(response => {
         console.log(response);
-        // handle successful response
+        localStorage.setItem('token', response.data['access_token']);
       })
       .catch(error => {
         console.log(error);

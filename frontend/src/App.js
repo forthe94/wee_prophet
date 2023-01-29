@@ -8,8 +8,6 @@ import LoginPage from "./Pages/login";
 
 
 function App() {
-  const storedJwt = localStorage.getItem('token');
-  console.log("storedJWT =", storedJwt)
   return (
     <div className="App">
       <Router>
