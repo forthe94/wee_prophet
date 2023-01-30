@@ -17,6 +17,8 @@ const initialRows = [
   {id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65},
 ];
 
+var curId=10;
+
 export default function DataGridDemo() {
   const [rows, setRows] = React.useState(initialRows);
 
@@ -71,9 +73,9 @@ export default function DataGridDemo() {
   ];
 
   const handleClick = () => {
-    const id = 10;
-    console.log('Adding new row')
-    setRows((oldRows) => [...oldRows, {id, lastName: '', firstName: '', age: 0}]);
+    console.log('Adding new row', curId)
+    setRows((oldRows) => [...oldRows, {id: curId, lastName: '', firstName: '', age: 0}]);
+    curId++
   };
 
   return (
