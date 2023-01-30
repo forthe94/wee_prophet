@@ -8,7 +8,6 @@ import LogoutPage from "./Pages/logout";
 import ProfilePage from "./Pages/profile";
 
 
-
 function App() {
   return (
     <div className="App">

@@ -5,6 +5,7 @@ import {styled} from '@mui/material/styles';
 import axios from "axios";
 import React from "react"
 import {Button} from "@mui/material";
+import DataGridDemo from "../Components/EditableTable";
 
 const Item = styled(Paper)(({theme}) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -74,6 +75,7 @@ class ProfilePage extends React.Component {
 
   render() {
     var renderPage = <Item> Loading </Item>
+
     var profilePage = <div>
       <Item> Your profile {this.state.profile} </Item>
       <Button
@@ -83,7 +85,9 @@ class ProfilePage extends React.Component {
         fullWidth
         onClick={this.handleSubmit}
       > Add deed </Button>
+      <DataGridDemo></DataGridDemo>
     </div>
+
     switch (this.state.authorized) {
       case false:
         renderPage = <Item> Not authorized</Item>
