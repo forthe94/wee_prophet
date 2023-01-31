@@ -78,13 +78,6 @@ class ProfilePage extends React.Component {
 
     var profilePage = <div>
       <Item> Your profile {this.state.profile} </Item>
-      <Button
-        variant="contained"
-        color="primary"
-        type="submit"
-        fullWidth
-        onClick={this.handleSubmit}
-      > Add deed </Button>
       <DataGridDemo></DataGridDemo>
     </div>
 
