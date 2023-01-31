@@ -54,8 +54,6 @@ export default function DataGridDemo() {
               onClick={(e) => onDeleteButtonClick(e, params.row.id)}
               variant="contained"
             />
-
-
           </IconButton>
         );
       }
