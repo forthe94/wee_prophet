@@ -25,7 +25,7 @@ export default function DataGridDemo() {
   };
   var nowDate = new Date();
   let columns = [
-    {field: 'id', headerName: 'ID'},
+    {field: 'id', headerName: 'ID', hide: true},
     {field: 'deed_name', headerName: 'Название занятия', width: 250, editable: true},
 
   ]
@@ -68,7 +68,7 @@ export default function DataGridDemo() {
       }
     }
     console.log('Adding new row', curId)
-    setRows((oldRows) => [...oldRows, {id: getNextId(), lastName: '', firstName: '', age: 0}]);
+    setRows((oldRows) => [...oldRows, {id: getNextId(), deed_name: 'Название дела', firstName: '', age: 0}]);
     curId++
   };
 
