@@ -7,21 +7,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const initialRows = [
   {id: 1, deed_name: 'Зарядка', lastName: 'Snow', firstName: 'Jon', age: 35},
-  {id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42},
-  {id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45},
-  {id: 4, lastName: 'Stark', firstName: 'Arya', age: 16},
-  {id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null},
-  {id: 6, lastName: 'Melisandre', firstName: null, age: 150},
-  {id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44},
-  {id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36},
-  {id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65},
 ];
 
 let curId=10;
 function getDateWithDaysDiff(date, days) {
   date.setHours(0,0,0,0)
   date = new Date(date.getTime() + days * 86400000)
-  return date.getFullYear()+'/'+('0' + (date.getMonth()+1)).slice(-2)+'/'+date.getDate();
+  return date.getFullYear()+'/'+('0' + (date.getMonth()+1)).slice(-2)+'/'+('0' + date.getDate()).slice(-2);
 }
 export default function DataGridDemo() {
   const [rows, setRows] = React.useState(initialRows);
@@ -61,8 +53,22 @@ export default function DataGridDemo() {
   );
 
   const handleClick = () => {
+    const getNextId = () => {
+      let cur_id = 0;
+      while (true) {
+        let found = false;
+        for (let ind = 0; ind < rows.length; ind++) {
+          if (cur_id === rows[ind]['id']) {
+            found = true;
+            break
+          }
+        }
+        if (found === false) return cur_id
+        cur_id++
+      }
+    }
     console.log('Adding new row', curId)
-    setRows((oldRows) => [...oldRows, {id: curId, lastName: '', firstName: '', age: 0}]);
+    setRows((oldRows) => [...oldRows, {id: getNextId(), lastName: '', firstName: '', age: 0}]);
     curId++
   };
 
