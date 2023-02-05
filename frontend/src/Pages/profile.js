@@ -4,8 +4,8 @@ import Paper from '@mui/material/Paper'
 import {styled} from '@mui/material/styles';
 import axios from "axios";
 import React from "react"
-import {Button} from "@mui/material";
 import DataGridDemo from "../Components/EditableTable";
+import config from "../config.json"
 
 const Item = styled(Paper)(({theme}) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -32,7 +32,7 @@ class ProfilePage extends React.Component {
     console.log("state=", this.state)
     if (token) {
       axios.get(
-        'http://localhost:8000/users/me', {
+        config.SERVER_URL + '/users/me', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -53,7 +53,7 @@ class ProfilePage extends React.Component {
     const token = localStorage.getItem('token')
 
     // send axios request to backend server
-    axios.post('http://localhost:8000/deed-record', {
+    axios.post(config.SERVER_URL + '/deed-record', {
         'example': 'data'
       },
       {
