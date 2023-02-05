@@ -1,10 +1,11 @@
 import motor.motor_asyncio
-from beanie import PydanticObjectId, Document
+from beanie import PydanticObjectId
 from fastapi_users.db import BeanieBaseUser, BeanieUserDatabase
 
-DATABASE_URL = "mongodb://root:example@localhost:27017"
+from backend.src import config
+
 client = motor.motor_asyncio.AsyncIOMotorClient(
-    DATABASE_URL, uuidRepresentation="standard"
+    config.DATABASE_URL, uuidRepresentation="standard"
 )
 db = client["wee_prophet"]
 
