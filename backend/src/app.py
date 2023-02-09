@@ -1,10 +1,10 @@
 from beanie import init_beanie
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Header
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 
 from backend.src.db import User, db
-from backend.src.schemas import UserCreate, UserRead, UserUpdate
+from backend.src.schemas import UserCreate, UserRead, UserUpdate, DeedRecordRequestBody
 from backend.src.users import auth_backend, current_active_user, fastapi_users
 
 app = FastAPI()
@@ -40,19 +40,29 @@ app.include_router(
     tags=["users"],
 )
 
+
 @app.post("/deed-record")
-async def create_deed_record(request: Request, user: User = Depends(current_active_user)):
-    document = {'test': 'value'}
+async def create_deed_record(
+    request_params: DeedRecordRequestBody,
+    request: Request,
+    user: User = Depends(current_active_user),
+    auth_header = Header(alias='Authorization'),
+):
+    for date_num in range(len(request_params.dates)):
 
-    result = await db.test_collection.insert_one(document)
+        document = {
+            'user_id': user.id,
+        }
+        for deed_name, vals_list in request_params.deeds.items():
+            document[deed_name] = vals_list[date_num]
 
-    print('result %s' % repr(result.inserted_id))
+        query = {'user_id': user.id, 'date': request_params.dates[date_num]};
+        update = { '$set': document};
+        result = await db.deeds.update_one(query, update, upsert=True);
+
+        print("result %s" % repr(result.raw_result))
+
     return "OK"
-
-
-@app.get("/authenticated-route")
-async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.email}!"}
 
 
 @app.on_event("startup")

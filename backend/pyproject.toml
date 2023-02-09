@@ -11,6 +11,8 @@ python = "3.11.1"
 fastapi = "^0.88.0"
 uvicorn = "^0.20.0"
 fastapi-users = {extras = ["beanie"], version = "^10.2.1"}
+mypy = "^0.991"
+black = "^23.1.0"
 
 
 [build-system]
