@@ -52,9 +52,10 @@ async def create_deed_record(
 
         document = {
             'user_id': user.id,
+            'deeds': {},
         }
         for deed_name, vals_list in request_params.deeds.items():
-            document[deed_name] = vals_list[date_num]
+            document['deeds'][deed_name] = vals_list[date_num]
 
         query = {'user_id': user.id, 'date': request_params.dates[date_num]};
         update = { '$set': document};
