@@ -20,3 +20,7 @@ class UserUpdate(schemas.BaseUserUpdate):
 class DeedRecordRequestBody(BaseModel):
     dates: list[str]
     deeds: dict[str, list[str]]
+
+
+class GetDeedRecordRequestBody(BaseModel):
+    dates: list[str]

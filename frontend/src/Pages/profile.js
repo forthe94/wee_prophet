@@ -29,7 +29,6 @@ class ProfilePage extends React.Component {
   componentWillMount() {
 
     const token = localStorage.getItem('token')
-    console.log("state=", this.state)
     if (token) {
       axios.get(
         config.SERVER_URL + '/users/me', {
@@ -42,36 +41,11 @@ class ProfilePage extends React.Component {
           this.setState({'authorized': true, 'profile': response.data['email'], 'error': false})
         })
         .catch((error) => console.log(error));
-        this.setState({'error': true})
+      this.setState({'error': true})
     } else {
       this.setState({'authorized': false, 'error': false})
     }
   }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    const token = localStorage.getItem('token')
-
-    // send axios request to backend server
-    axios.post(config.SERVER_URL + '/deed-record', {
-        'example': 'data'
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    )
-      .then(response => {
-        console.log(response);
-        // handle successful response
-      })
-      .catch(error => {
-        console.log(error);
-        // handle error
-      });
-  }
-
 
   render() {
     var renderPage = <Item> Loading </Item>
@@ -92,7 +66,7 @@ class ProfilePage extends React.Component {
         break
     }
 
-    if (this.state.error === true){
+    if (this.state.error === true) {
       renderPage = <Item> Token expired </Item>
     }
     return (

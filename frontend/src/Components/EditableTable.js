@@ -1,9 +1,11 @@
-import React, {useRef} from "react"
+import React, {useRef, useEffect} from "react"
 import Box from '@mui/material/Box';
 import {DataGrid} from '@mui/x-data-grid';
 import {Button, IconButton} from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from "axios";
+import config from "../config.json";
 const weekday = ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"];
 let initialRows = [
   {id: 0, deed_name: 'Настроение'},
@@ -28,18 +30,68 @@ for (let day = -5; day < 5; day++) {
   let date_key = getDateWithDaysDiff(nowDate, day)
   date_keys.push(date_key)
   date_headers.push(getDateWithDaysDiff(nowDate, day, true))
-  initialRows[0][date_key] = 0
+  initialRows[0][date_key] = '0'
 }
 
+function getDeedsFromBackend() {
+  const token = localStorage.getItem('token')
+  axios.post(
+    config.SERVER_URL + '/get-deed-records',
+    {
+      'dates': date_keys
+    },
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response)
+    })
+    .catch((error) => console.log(error));
+}
 
 export default function DataGridDemo() {
   const [rows, setRows] = React.useState(initialRows);
   const rowsState = useRef();
+  useEffect(getDeedsFromBackend, []);
   // Из rowsState можно брать текущее состояние таблицы
   rowsState.current = rows
+  const postToBackend = () => {
+    let currentRows = rowsState.current
+      let deeds = {}
+      for (let cur_deed_name_ind = 0; cur_deed_name_ind < currentRows.length; cur_deed_name_ind++)
+      {
+        let deed_name = currentRows[cur_deed_name_ind]['deed_name']
+        let vals = []
+        for (let date_num = 0; date_num < date_keys.length; date_num++)
+        {
+          vals.push(currentRows[cur_deed_name_ind][date_keys[date_num]])
+        }
+        deeds[deed_name] = vals
+      }
+      const token = localStorage.getItem('token')
+
+      axios.post(
+        config.SERVER_URL + '/save-deed-records',
+        {
+          'dates': date_keys,
+          'deeds': deeds
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => console.log(error));
+
+  }
   const onDeleteButtonClick = (e, id) => {
     e.stopPropagation();
-    console.log('Delete row', id)
+    postToBackend()
     setRows(rows.filter((initialRows) => initialRows.id !== id));
   };
   let columns = [
@@ -58,6 +110,7 @@ export default function DataGridDemo() {
   columns.push(
     {
       field: 'actions', headerName: '', width: 400, renderCell: (params) => {
+        if (params.row.id === 0) return null
         return (
           <IconButton>
             <DeleteIcon
@@ -85,16 +138,17 @@ export default function DataGridDemo() {
         cur_id++
       }
     }
-    console.log('Adding new row')
+    postToBackend()
     let newRow = {id: getNextId(), deed_name: 'Название дела'}
     for (let day = 0; day < 10; day++){
-      newRow[date_keys[day]] = 0
+      newRow[date_keys[day]] = '0'
     }
 
     setRows((oldRows) => [...oldRows, newRow]);
   };
   const processRowUpdate = React.useCallback(
     async (newRow) => {
+      postToBackend()
 
       setRows((oldRows) => {
         let rowInd = 0

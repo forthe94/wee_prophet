@@ -1,10 +1,14 @@
+import logging
+
 from beanie import init_beanie
-from fastapi import Depends, FastAPI, Header
+from fastapi import Depends, FastAPI
+from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
+from starlette.responses import PlainTextResponse
 
 from backend.src.db import User, db
-from backend.src.schemas import UserCreate, UserRead, UserUpdate, DeedRecordRequestBody
+from backend.src.schemas import UserCreate, UserRead, UserUpdate, DeedRecordRequestBody, GetDeedRecordRequestBody
 from backend.src.users import auth_backend, current_active_user, fastapi_users
 
 app = FastAPI()
@@ -41,29 +45,40 @@ app.include_router(
 )
 
 
-@app.post("/deed-record")
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc: Exception):
+    logging.exception(exc)
+    return PlainTextResponse(str(exc), status_code=400)
+
+
+@app.post("/save-deed-records")
 async def create_deed_record(
     request_params: DeedRecordRequestBody,
     request: Request,
     user: User = Depends(current_active_user),
-    auth_header = Header(alias='Authorization'),
 ):
     for date_num in range(len(request_params.dates)):
-
         document = {
-            'user_id': user.id,
-            'deeds': {},
+            "user_id": user.id,
+            "deeds": {},
         }
         for deed_name, vals_list in request_params.deeds.items():
-            document['deeds'][deed_name] = vals_list[date_num]
+            document["deeds"][deed_name] = vals_list[date_num]
 
-        query = {'user_id': user.id, 'date': request_params.dates[date_num]};
-        update = { '$set': document};
-        result = await db.deeds.update_one(query, update, upsert=True);
-
-        print("result %s" % repr(result.raw_result))
+        query = {"user_id": user.id, "date": request_params.dates[date_num]}
+        update = {"$set": document}
+        result = await db.deeds.update_one(query, update, upsert=True)
 
     return "OK"
+
+
+@app.post("/get-deed-records")
+async def get_deed_records(
+    request_params: GetDeedRecordRequestBody,
+    request: Request,
+    user: User = Depends(current_active_user),
+):
+    print(request_params.dates)
 
 
 @app.on_event("startup")
