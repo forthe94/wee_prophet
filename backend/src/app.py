@@ -2,6 +2,7 @@ import logging
 
 from beanie import init_beanie
 from fastapi import Depends, FastAPI
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
@@ -57,6 +58,15 @@ async def create_deed_record(
     request: Request,
     user: User = Depends(current_active_user),
 ):
+    deeds_kws = list(request_params.deeds.keys())
+    doc = {
+        "user_id": user.id,
+        "deeds_list": deeds_kws,
+    }
+    query = {"user_id": user.id,}
+    update = {"$set": doc}
+    await db.deed_list.update_one(query, update, upsert=True)
+
     for date_num in range(len(request_params.dates)):
         document = {
             "user_id": user.id,
@@ -78,7 +88,14 @@ async def get_deed_records(
     request: Request,
     user: User = Depends(current_active_user),
 ):
-    print(request_params.dates)
+    response = {}
+    deeds_list = await db.deed_list.find_one({'user_id': user.id}, {'_id': 0, 'user_id': 0})
+    response['deeds_list'] = deeds_list['deeds_list']
+    for date in request_params.dates:
+        doc = await db.deeds.find_one({'date': date, 'user_id': user.id}, {'_id': 0, 'user_id': 0})
+
+        response[date] = doc
+    return response
 
 
 @app.on_event("startup")
