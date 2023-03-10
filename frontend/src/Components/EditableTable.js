@@ -74,8 +74,11 @@ export default function DataGridDemo() {
             if (i !== 0) {
               tmpRows.push({'deed_name': deeds_list[i], id: i})
             }
-            for (let key_ind = 0; key_ind < date_keys.length; key_ind++){
-              tmpRows[i][date_keys[key_ind]] = response['data'][date_keys[key_ind]]['deeds'][deeds_list[i]]
+            for (const date of date_keys){
+              if (response['data'][date]) {
+                tmpRows[i][date] = response['data'][date]['deeds'][deeds_list[i]]
+                }
+              else tmpRows[i][date] = 0
             }
           }
           return tmpRows

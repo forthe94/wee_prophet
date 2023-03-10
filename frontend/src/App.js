@@ -18,6 +18,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/" element={<ProfilePage />} />
 
         </Routes>
       </Router>
