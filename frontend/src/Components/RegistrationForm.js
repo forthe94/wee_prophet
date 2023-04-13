@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, TextField, Grid} from '@mui/material';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const baseURL = 'http://localhost:8000';
 if (typeof baseURL !== 'undefined') {
@@ -10,6 +10,7 @@ if (typeof baseURL !== 'undefined') {
 
 export default function RegistrationForm() {
   const navigate = useNavigate();
+  const [confirmError, setConfirmError] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,8 +25,23 @@ export default function RegistrationForm() {
     });
   }
 
+  const handleConfirmChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+
+    if (formData.password === e.target.value || formData.password.length > e.target.value.length) {
+      setConfirmError((e) => false)
+    } else {
+      setConfirmError((e) => true)
+
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // send axios request to backend server
     axios.post('http://localhost:8000/auth/register', {
       email: formData.email,
@@ -86,9 +102,10 @@ export default function RegistrationForm() {
             name="confirmPassword"
             type="password"
             value={formData.confirmPassword}
-            onChange={handleChange}
+            onChange={handleConfirmChange}
             variant="outlined"
             margin="normal"
+            error={confirmError}
             fullWidth
           />
         </div>

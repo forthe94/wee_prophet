@@ -53,16 +53,16 @@ export default function MenuAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={clickLeftMenu}
-          >
-            <MenuIcon />
-          </IconButton>
+          {/*<IconButton*/}
+          {/*  size="large"*/}
+          {/*  edge="start"*/}
+          {/*  color="inherit"*/}
+          {/*  aria-label="menu"*/}
+          {/*  sx={{ mr: 2 }}*/}
+          {/*  onClick={clickLeftMenu}*/}
+          {/*>*/}
+          {/*  <MenuIcon />*/}
+          {/*</IconButton>*/}
 
 
           {/* Left hand side */}
@@ -136,9 +136,6 @@ export default function MenuAppBar() {
               >
                 <ListItem button onClick={() => redirectRoute("/profile")}>
                   <ListItemText primary="Profile" />
-                </ListItem>
-                <ListItem button onClick={() => redirectRoute("/myaccount")}>
-                  <ListItemText primary="My Account" />
                 </ListItem>
                 <ListItem button onClick={() => redirectRoute("/login")}>
                   <ListItemText primary="Login" />

@@ -21,7 +21,7 @@ class ProfilePage extends React.Component {
 
     this.state = {
       authorized: null,
-      error: null,
+      error: false,
       profile: null
     };
   }
@@ -29,6 +29,7 @@ class ProfilePage extends React.Component {
   componentWillMount() {
 
     const token = localStorage.getItem('token')
+    console.log('In comp will m')
     if (token) {
       axios.get(
         config.SERVER_URL + '/users/me', {
@@ -37,11 +38,9 @@ class ProfilePage extends React.Component {
           },
         })
         .then((response) => {
-          console.log(response)
           this.setState({'authorized': true, 'profile': response.data['email'], 'error': false})
         })
-        .catch((error) => console.log(error));
-      this.setState({'error': true})
+        .catch((error) => this.setState({'error': true}));
     } else {
       this.setState({'authorized': false, 'error': false})
     }
@@ -54,21 +53,21 @@ class ProfilePage extends React.Component {
       <Item> Your profile {this.state.profile} </Item>
       <DataGridDemo></DataGridDemo>
     </div>
-
-    switch (this.state.authorized) {
-      case false:
-        renderPage = <Item> Not authorized</Item>
-        break
-      case true:
-        renderPage = profilePage
-        break
-      default:
-        break
-    }
-
-    if (this.state.error === true) {
+    if (this.state.error) {
       renderPage = <Item> Token expired </Item>
+    } else {
+      if (this.state.authorized != null)
+      {
+        if (this.state.authorized) {
+        renderPage = profilePage
+      } else {
+        renderPage = <Item> Not authorized</Item>
+      }
+      }
+
     }
+
+
     return (
 
       <div style={{
